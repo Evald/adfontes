@@ -1,0 +1,22 @@
+<h1>{{ user.name }}</h1>
+
+<p>This component demonstrates fetching current user and displaying user data</p>
+
+<p *ngIf="!user"><em>Loading...</em></p>
+
+<table class='table' *ngIf="user">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>email</th>
+            <th>phonenumber</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phonenumber }}</td>
+        </tr>
+    </tbody>
+</table>

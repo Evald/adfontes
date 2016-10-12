@@ -52,6 +52,9 @@ namespace Adfontes
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+
+            // Register application services.
+            services.AddScoped<INoteRepository, NoteRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

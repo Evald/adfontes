@@ -10,39 +10,29 @@ namespace Adfontes.Controllers
     [Route("api/[controller]")]
     public class NotebookController : Controller
     {
-       //make a list og books as mock data
+        private INoteRepository _repo;
 
-       List<
-
-        [HttpGet("[action]")]
-        public IEnumerable<WeatherForecast> WeatherForecasts()
-        {
-            var rng = new Random();
-            
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                DateFormatted = DateTime.Now.AddDays(index).ToString("d"),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            });
-            
+        public NotebookController(INoteRepository repo){
+            this._repo = repo;
         }
 
-
-
-        public class WeatherForecast
+        [HttpGet("[action]")]
+        public IEnumerable<Notebook> Notebooks()
         {
-            public string DateFormatted { get; set; }
-            public int TemperatureC { get; set; }
-            public string Summary { get; set; }
+            return _repo.GetNotebooks();
+        }
 
-            public int TemperatureF
-            {
-                get
-                {
-                    return 32 + (int)(this.TemperatureC / 0.5556);
-                }
-            }
+       [HttpGet("{id}", Name = "GetNotebook")]
+        public IActionResult GetNotebookById(int id){
+            return _repo.GetNotebook(id);
+        }
+
+        [HttpPost]
+        public IActionResult CreateNotebook([FromBody]Notebook book)
+        {
+            _repo.AddNotebook(book);
+
+            return this.CreatedAtRoute("GetNotebook", new { controller = "Notebook", id = book.NotebookId }, book);
         }
     }
 }

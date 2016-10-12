@@ -61,5 +61,19 @@ namespace Adfontes.Models {
            _context.SaveChanges();
            return  item;
         }
+
+         Note AddNote(int notebookId, Note note){
+            var notebook = this.GetNotebook(notebookId);
+            var noteItem = new Note(note);
+            notebook.Notes.Add(noteItem);
+            _context.SaveChanges();
+            return noteItem;
+         }
+        Notebook AddNotebook(Notebook notebook){
+            var notebook = new Notebook(notebook);
+            _context.Notebooks.Add(notebook);
+            _context.SaveChanges();
+            return notebook;
+        }
     }
 }

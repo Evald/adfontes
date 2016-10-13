@@ -6,5 +6,6 @@ namespace Adfontes.Models
     {
         public int NoteTypeId { get; set; }
         public string Title { get; set; }
+        public List<Note> Notes { get; set; }
     }
 }

@@ -29,51 +29,59 @@ namespace Adfontes.Models {
 
         public IEnumerable<Note> GetNotes(int notebookId)
         {
-            return _context.Notes.Where(n => n.NotebookId == id).ToList();
+            return _context.Notes.Where(n => n.NotebookId == notebookId).ToList();
         }
 
-        public Note RemoveNote(int id)
+        public void RemoveNote(int id)
         {
            Note item = _context.Notes.Single(n => n.NoteId == id);
            _context.Remove(item);
            _context.SaveChanges();
-           return  item;
         }
 
-        public Notebook RemoveNotebook(int id)
+        public void RemoveNotebook(int id)
         {
             Notebook item = _context.Notebooks.Single(n => n.NotebookId == id);
            _context.Remove(item);
            _context.SaveChanges();
-           return  item;
         }
 
         public Note UpdateNote(Note note)
         {
-            Note item = _context.Update(note);
+            var item = _context.Notes.Single(n => n.NoteId == note.NoteId);
+            item.Title = note.Title;
+
+            var type = _context.NoteTypes.Single(n => n.NoteTypeId == note.NoteTypeId);
+            if (type != null)
+            {
+                 type.Notes.Add(item);
+            }else
+            {
+                item.NoteTypeId = 0;
+            }           
+
            _context.SaveChanges();
            return  item;
         }
 
         public Notebook UpdateNotebook(Notebook notebook)
         {
-            Notebook item = _context.Update(notebook);
+            Notebook item = _context.Notebooks.Single(n => n.NotebookId == notebook.NotebookId);
+            item.Title = notebook.Title;
            _context.SaveChanges();
            return  item;
         }
 
-         Note AddNote(int notebookId, Note note){
+         public void AddNote(int notebookId, Note note){
             var notebook = this.GetNotebook(notebookId);
-            var noteItem = new Note(note);
-            notebook.Notes.Add(noteItem);
+            notebook.Notes.Add(note);
+            var noteItem = _context.Notes.Add(note);
             _context.SaveChanges();
-            return noteItem;
+
          }
-        Notebook AddNotebook(Notebook notebook){
-            var notebook = new Notebook(notebook);
-            _context.Notebooks.Add(notebook);
+        public void AddNotebook(Notebook notebook){
+            var notebookItem = _context.Notebooks.Add(notebook);
             _context.SaveChanges();
-            return notebook;
         }
     }
 }

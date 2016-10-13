@@ -53,6 +53,8 @@ namespace Adfontes
 
             services.AddMvc();
 
+            services.AddSwaggerGen();
+
             // Register application services.
             services.AddScoped<INoteRepository, NoteRepository>();
         }
@@ -89,6 +91,9 @@ namespace Adfontes
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
             });
+
+            app.UseSwagger();
+            app.UseSwaggerUi();
         }
     }
 }

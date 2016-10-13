@@ -7,6 +7,7 @@ using Adfontes.Models;
 
 namespace Adfontes.Controllers
 {
+
     [Route("api/[controller]")]
     public class NotebookController : Controller
     {
@@ -24,7 +25,7 @@ namespace Adfontes.Controllers
 
        [HttpGet("{id}", Name = "GetNotebook")]
         public IActionResult GetNotebookById(int id){
-            return _repo.GetNotebook(id);
+            return new JsonResult(_repo.GetNotebook(id));
         }
 
         [HttpPost]

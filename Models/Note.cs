@@ -10,6 +10,7 @@ namespace Adfontes.Models
         public NoteType NoteType { get; set; }
         public int NotebookId { get; set; }
         public Notebook Notebook { get; set; }
+        public List<Note> Notes { get; set; }
         
         [ForeignKey("Author")]
         public string AuthorId { get; set; }

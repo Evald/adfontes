@@ -241,3 +241,6 @@ _Pvt_Extensions
 
 #Visual Studio Code project folder
 .vscode
+
+#Appsettings.json file, best keep this out of source control
+/appsettings.json

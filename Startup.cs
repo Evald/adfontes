@@ -20,9 +20,6 @@ namespace Adfontes
 {
     public class Startup
     {
-        private SymmetricSecurityKey signingkey;
-       
-        
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -30,11 +27,7 @@ namespace Adfontes
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
-            Configuration = builder.Build();
-
-            //symetric key generation using secret (see appsettings.json)
-            this.signingkey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["secret"]));
-            
+            Configuration = builder.Build();            
         }
        
 
@@ -57,6 +50,7 @@ namespace Adfontes
 
             // Register application services.
             services.AddScoped<INoteRepository, NoteRepository>();
+            services.AddTransient<ApplicationDbSeed>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,6 +65,8 @@ namespace Adfontes
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions {
                     HotModuleReplacement = true
                 });
+
+                //use database seeder here
             }
             else
             {
@@ -81,6 +77,7 @@ namespace Adfontes
 
              app.UseIdentity();
 
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

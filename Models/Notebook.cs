@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,5 +13,7 @@ namespace Adfontes.Models
         [ForeignKey("Author")]
         public string AuthorId { get; set; }
         public ApplicationUser Author { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

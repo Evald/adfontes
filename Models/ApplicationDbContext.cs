@@ -15,8 +15,9 @@ namespace Adfontes.Models
         }
 
         public DbSet<Notebook> Notebooks { get; set; }
-        public DbSet<NoteType> NoteTypes { get; set; }
+        public DbSet<ComponentType> ComponentTypes { get; set; }
         public DbSet<Note> Notes { get; set; }
+        public DbSet<Component> Components { get; set; }
     
 
         protected override void OnModelCreating(ModelBuilder builder)

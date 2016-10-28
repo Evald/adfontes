@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace adfontes.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class Initialmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,6 +17,8 @@ namespace adfontes.Migrations
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
@@ -31,6 +33,19 @@ namespace adfontes.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComponentTypes",
+                columns: table => new
+                {
+                    ComponentTypeId = table.Column<int>(nullable: false)
+                        .Annotation("Autoincrement", true),
+                    Title = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComponentTypes", x => x.ComponentTypeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -59,6 +74,28 @@ namespace adfontes.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notebooks",
+                columns: table => new
+                {
+                    NotebookId = table.Column<int>(nullable: false)
+                        .Annotation("Autoincrement", true),
+                    AuthorId = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    UpdatedAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notebooks", x => x.NotebookId);
+                    table.ForeignKey(
+                        name: "FK_Notebooks_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -147,6 +184,62 @@ namespace adfontes.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Notes",
+                columns: table => new
+                {
+                    NoteId = table.Column<int>(nullable: false)
+                        .Annotation("Autoincrement", true),
+                    AuthorId = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    NotebookId = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    UpdatedAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notes", x => x.NoteId);
+                    table.ForeignKey(
+                        name: "FK_Notes_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Notes_Notebooks_NotebookId",
+                        column: x => x.NotebookId,
+                        principalTable: "Notebooks",
+                        principalColumn: "NotebookId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Components",
+                columns: table => new
+                {
+                    ComponentId = table.Column<int>(nullable: false)
+                        .Annotation("Autoincrement", true),
+                    ComponentTypeId = table.Column<int>(nullable: false),
+                    Content = table.Column<string>(nullable: true),
+                    NoteId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Components", x => x.ComponentId);
+                    table.ForeignKey(
+                        name: "FK_Components_ComponentTypes_ComponentTypeId",
+                        column: x => x.ComponentTypeId,
+                        principalTable: "ComponentTypes",
+                        principalColumn: "ComponentTypeId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Components_Notes_NoteId",
+                        column: x => x.NoteId,
+                        principalTable: "Notes",
+                        principalColumn: "NoteId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
@@ -157,6 +250,31 @@ namespace adfontes.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Components_ComponentTypeId",
+                table: "Components",
+                column: "ComponentTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Components_NoteId",
+                table: "Components",
+                column: "NoteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notes_AuthorId",
+                table: "Notes",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notes_NotebookId",
+                table: "Notes",
+                column: "NotebookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notebooks_AuthorId",
+                table: "Notebooks",
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -192,6 +310,9 @@ namespace adfontes.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Components");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -207,7 +328,16 @@ namespace adfontes.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ComponentTypes");
+
+            migrationBuilder.DropTable(
+                name: "Notes");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Notebooks");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

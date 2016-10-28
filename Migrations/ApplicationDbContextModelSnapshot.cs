@@ -29,6 +29,10 @@ namespace adfontes.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
@@ -64,6 +68,38 @@ namespace adfontes.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Adfontes.Models.Component", b =>
+                {
+                    b.Property<int>("ComponentId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ComponentTypeId");
+
+                    b.Property<string>("Content");
+
+                    b.Property<int>("NoteId");
+
+                    b.HasKey("ComponentId");
+
+                    b.HasIndex("ComponentTypeId");
+
+                    b.HasIndex("NoteId");
+
+                    b.ToTable("Components");
+                });
+
+            modelBuilder.Entity("Adfontes.Models.ComponentType", b =>
+                {
+                    b.Property<int>("ComponentTypeId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("ComponentTypeId");
+
+                    b.ToTable("ComponentTypes");
+                });
+
             modelBuilder.Entity("Adfontes.Models.Note", b =>
                 {
                     b.Property<int>("NoteId")
@@ -71,17 +107,17 @@ namespace adfontes.Migrations
 
                     b.Property<string>("AuthorId");
 
-                    b.Property<int>("NoteTypeId");
+                    b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("NotebookId");
 
                     b.Property<string>("Title");
 
+                    b.Property<DateTime>("UpdatedAt");
+
                     b.HasKey("NoteId");
 
                     b.HasIndex("AuthorId");
-
-                    b.HasIndex("NoteTypeId");
 
                     b.HasIndex("NotebookId");
 
@@ -95,25 +131,17 @@ namespace adfontes.Migrations
 
                     b.Property<string>("AuthorId");
 
+                    b.Property<DateTime>("CreatedAt");
+
                     b.Property<string>("Title");
+
+                    b.Property<DateTime>("UpdatedAt");
 
                     b.HasKey("NotebookId");
 
                     b.HasIndex("AuthorId");
 
                     b.ToTable("Notebooks");
-                });
-
-            modelBuilder.Entity("Adfontes.Models.NoteType", b =>
-                {
-                    b.Property<int>("NoteTypeId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Title");
-
-                    b.HasKey("NoteTypeId");
-
-                    b.ToTable("NoteTypes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -223,16 +251,24 @@ namespace adfontes.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Adfontes.Models.Component", b =>
+                {
+                    b.HasOne("Adfontes.Models.ComponentType", "ComponentType")
+                        .WithMany("Components")
+                        .HasForeignKey("ComponentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Adfontes.Models.Note", "Note")
+                        .WithMany("Components")
+                        .HasForeignKey("NoteId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Adfontes.Models.Note", b =>
                 {
                     b.HasOne("Adfontes.Models.ApplicationUser", "Author")
                         .WithMany("Notes")
                         .HasForeignKey("AuthorId");
-
-                    b.HasOne("Adfontes.Models.NoteType", "NoteType")
-                        .WithMany("Notes")
-                        .HasForeignKey("NoteTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Adfontes.Models.Notebook", "Notebook")
                         .WithMany("Notes")

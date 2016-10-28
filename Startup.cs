@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
+using Adfontes.Models.Repositories;
 using Adfontes.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -49,12 +49,12 @@ namespace Adfontes
             services.AddSwaggerGen();
 
             // Register application services.
-            services.AddScoped<INoteRepository, NoteRepository>();
-            services.AddTransient<ApplicationDbSeed>();
+            services.AddScoped<IAdfontesRepository<Notebook>, NotebookRepository>();
+            services.AddSingleton<ApplicationDbSeed,ApplicationDbSeed>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ApplicationDbContext context)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -65,8 +65,7 @@ namespace Adfontes
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions {
                     HotModuleReplacement = true
                 });
-
-                //use database seeder here
+                
             }
             else
             {
@@ -75,8 +74,10 @@ namespace Adfontes
 
             app.UseStaticFiles();
 
-             app.UseIdentity();
-
+            app.UseIdentity();
+            
+            //Database seeder
+            app.ApplicationServices.GetService<ApplicationDbSeed>().InitialSeed();
             
             app.UseMvc(routes =>
             {

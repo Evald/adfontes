@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Adfontes.Models
@@ -6,14 +8,14 @@ namespace Adfontes.Models
     {
         public int NoteId { get; set; }
         public string Title { get; set; }
-        public int NoteTypeId { get; set; }
-        public NoteType NoteType { get; set; }
         public int NotebookId { get; set; }
         public Notebook Notebook { get; set; }
-        public List<Note> Notes { get; set; }
+        public List<Component> Components {get; set; }
         
         [ForeignKey("Author")]
         public string AuthorId { get; set; }
         public ApplicationUser Author { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

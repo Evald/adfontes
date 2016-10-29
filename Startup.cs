@@ -44,12 +44,14 @@ namespace Adfontes
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
 
             services.AddSwaggerGen();
 
             // Register application services.
-            services.AddScoped<IAdfontesRepository<Notebook>, NotebookRepository>();
+            services.AddScoped<NotebookRepository, NotebookRepository>();
             services.AddSingleton<ApplicationDbSeed,ApplicationDbSeed>();
         }
 

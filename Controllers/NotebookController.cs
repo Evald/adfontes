@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Adfontes.Models;
+using Adfontes.Models.ViewModels;
 using Adfontes.Models.Repositories;
 
 namespace Adfontes.Controllers
@@ -12,30 +13,31 @@ namespace Adfontes.Controllers
     [Route("api/[controller]")]
     public class NotebookController : Controller
     {
-        private IAdfontesRepository<Notebook> _repo;
+        private NotebookRepository _repo;
 
-        public NotebookController(IAdfontesRepository<Notebook> repo){
+        public NotebookController(NotebookRepository repo){
             this._repo = repo;
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<Notebook> Notebooks()
+        public async Task<List<Notebook>> Notebooks()
         {
-            var notebooks = _repo.GetAll();
+            var notebooks = await _repo.GetAll();
             return notebooks;
         }
 
        [HttpGet("{id}", Name = "GetNotebook")]
-        public IActionResult GetNotebookById(int id){
-            return new JsonResult(_repo.GetById(id));
+        public async Task<IActionResult> GetNotebookById(int id){
+            var notebook = await _repo.GetById(id);
+            return Json(notebook);
         }
 
         [HttpPost]
-        public IActionResult CreateNotebook([FromBody]Notebook book)
+        public async Task<IActionResult> CreateNotebook([FromBody]NotebookAddViewModel book)
         {
-            _repo.Add(book);
-
-            return this.CreatedAtRoute("GetNotebook", new { controller = "Notebook", id = book.NotebookId }, book);
+            var notebook = await _repo.Add(book);
+            return Json(notebook);
+            
         }
     }
 }

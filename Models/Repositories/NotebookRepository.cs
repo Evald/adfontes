@@ -17,7 +17,7 @@ namespace Adfontes.Models.Repositories {
         public NotebookRepository(ApplicationDbContext context){
             this._context = context;
         }
-        public async Task<Notebook> Add(NotebookAddViewModel entity)
+        public async Task<Notebook> Add(Notebook entity)
         {
         
             var author = await _context.Users.SingleOrDefaultAsync(u => u.Id == entity.AuthorId);
@@ -26,19 +26,24 @@ namespace Adfontes.Models.Repositories {
                Author = author,
                CreatedAt = DateTime.Now,
                UpdatedAt = DateTime.Now
-            });
+            }).Entity;
             await _context.SaveChangesAsync();
 
-            return notebook.Entity;
+            return notebook;
         }
 
-        public async Task Edit(Notebook entity)
+        public async Task<Notebook> Edit(Notebook entity)
         {
-            //await _context.Notebooks.Update(entity);
-            throw new NotImplementedException();
+            var notebook = await this.GetById(entity.NotebookId);
+            notebook.Title = entity.Title;
+            notebook.UpdatedAt = DateTime.Now;
+
+           await _context.SaveChangesAsync();
+
+           return notebook;
         }
 
-        public async Task<List<Notebook>> GetAll()
+        public async Task<IEnumerable<Notebook>> GetAll()
         {
             var notebooks = await _context.Notebooks.ToListAsync();
             return notebooks;
@@ -50,9 +55,13 @@ namespace Adfontes.Models.Repositories {
             return notebook;
         }
 
-        public async Task Remove(int id)
+        public async Task<Notebook> Remove(int id)
         {
-            throw new NotImplementedException();
+            var notebook = await _context.Notebooks.Where(n => n.NotebookId == id).Include(book => book.Notes).ThenInclude(notes => notes.Components).SingleOrDefaultAsync();
+            _context.Notebooks.Remove(notebook);
+            await _context.SaveChangesAsync();
+            
+            return notebook;
         }        
     }
 }

@@ -1,0 +1,10 @@
+<div class="well" (click)="toggleShowNotes()">
+    <h2>ID: {{ notebook.notebookId }} | Title: {{ notebook.title }}</h2>
+    <p> {{ notebook.author }} </p>
+   
+    <div *ngIf="showNotes">
+        <notes [notebookId]="notebook.notebookId">
+        </notes>
+    </div>
+   
+</div>

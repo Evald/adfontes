@@ -52,6 +52,8 @@ namespace Adfontes
 
             // Register application services.
             services.AddScoped<NotebookRepository, NotebookRepository>();
+            services.AddScoped<NoteRepository, NoteRepository>();
+            services.AddScoped<ComponentRepository, ComponentRepository>();
             services.AddSingleton<ApplicationDbSeed,ApplicationDbSeed>();
         }
 

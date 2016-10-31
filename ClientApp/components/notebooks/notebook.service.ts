@@ -10,7 +10,7 @@ export class NotebookService {
     }
 
      getNotebooks(): Observable<Notebook[]> {
-          return this.http.get('/api/Notebook/Notebooks')
+          return this.http.get('/api/Notebook')
                     .map(res => res.json());
     }
     //   addHero (name: string): Observable<Hero> {

@@ -33,19 +33,19 @@ namespace Adfontes.Models
         [DataMember]
         public override string Email {
             get {
-                return base.UserName;
+                return base.Email;
             }
             set {
-                base.UserName = value;
+                base.Email = value;
             }
         }
         [DataMember]
         public override string PhoneNumber {
             get {
-                return base.UserName;
+                return base.PhoneNumber;
             }
             set {
-                base.UserName = value;
+                base.PhoneNumber = value;
             }
         }
     }

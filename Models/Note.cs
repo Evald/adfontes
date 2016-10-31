@@ -14,6 +14,7 @@ namespace Adfontes.Models
         public string Title { get; set; }    
         public int NotebookId { get; set; }
         public Notebook Notebook { get; set; }
+        [DataMember]
         public List<Component> Components {get; set; }
         
         [DataMember]
